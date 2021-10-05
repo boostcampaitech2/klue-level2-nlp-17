@@ -16,6 +16,8 @@ import numpy as np
 import argparse
 from tqdm import tqdm
 
+import configparser
+
 
 def inference(model, tokenized_sent, device):
     """
@@ -73,6 +75,12 @@ def load_test_dataset(dataset_dir, tokenizer):
 
 
 def main(args):
+    # read Config file
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    cf = config["project_config"]
+
     """
     주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
     """
@@ -82,7 +90,8 @@ def main(args):
     # Tokenizer_NAME = "klue/roberta-base"
     # Tokenizer_NAME = "klue/roberta-large"
     # Tokenizer_NAME = "xlm-roberta-base"
-    Tokenizer_NAME = "xlm-roberta-large"
+    # Tokenizer_NAME = "xlm-roberta-large"
+    Tokenizer_NAME = cf["model_name"]
     tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
 
     ## load my model

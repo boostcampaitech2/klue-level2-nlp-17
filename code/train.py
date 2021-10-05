@@ -19,7 +19,11 @@ from transformers import (
 from load_data import *
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
+import configparser
 
+import wandb
+import datetime
+from dateutil.tz import gettz
 
 def klue_re_micro_f1(preds, labels):
     """KLUE-RE micro f1 (except no_relation)"""
@@ -108,13 +112,29 @@ def label_to_num(label):
 
 
 def train():
+    # read Config file
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    cf = config['project_config']
+    wcf = config['wandb_config']
+
+    # wandb
+    if wcf.getboolean('wandb'):
+        wandb.init(project=wcf['project_name'])
+        run_name_params = ['epoch', 'learning_rate', 'train_batch_size', 'eval_batch_size', 'model_name']
+        # 21-10-01 00:00 # Parameters...
+        wandb.run.name = datetime.datetime.now(gettz('Asia/Seoul')).strftime('%y-%m-%d %H:%M') + ' | ' + ' | '.join([cf[s] for s in run_name_params])
+        wandb.run.save()
+
     # load model and tokenizer
     # MODEL_NAME = "bert-base-uncased"
     # MODEL_NAME = "klue/bert-base" # default
     # MODEL_NAME = "klue/roberta-base"
     # MODEL_NAME = "klue/roberta-large"
     # MODEL_NAME = "xlm-roberta-base"
-    MODEL_NAME = "xlm-roberta-large"
+    # MODEL_NAME = "xlm-roberta-large"
+    MODEL_NAME = cf['model_name']
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     # load dataset
@@ -157,30 +177,30 @@ def train():
     # 사용한 option 외에도 다양한 option들이 있습니다.
     # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
     training_args = TrainingArguments(
-        output_dir="./results",  # output directory
-        save_total_limit=5,  # number of total save model.
-        save_steps=500,  # model saving step.
-        num_train_epochs=10,  # total number of training epochs, default=20
-        learning_rate=5e-5,  # learning_rate
-        per_device_train_batch_size=64,  # batch size per device during training
-        per_device_eval_batch_size=16,  # batch size for evaluation
-        warmup_steps=500,  # number of warmup steps for learning rate scheduler
-        weight_decay=0.01,  # strength of weight decay
-        logging_dir="./logs",  # directory for storing logs
-        logging_steps=100,  # log saving step.
-        evaluation_strategy="steps",  # evaluation strategy to adopt during training
-        # `no`: No evaluation during training.
-        # `steps`: Evaluate every `eval_steps`.
-        # `epoch`: Evaluate every end of epoch.
-        eval_steps=500,  # evaluation step.
-        load_best_model_at_end=True,
+        output_dir='./results',          # output directory
+        save_total_limit=5,              # number of total save model.
+        save_steps=int(cf['save_steps']),                 # model saving step.
+        num_train_epochs=int(cf['epoch']),              # total number of training epochs
+        learning_rate=float(cf['learning_rate']),               # learning_rate
+        per_device_train_batch_size=int(cf['train_batch_size']),  # batch size per device during training
+        per_device_eval_batch_size=int(cf['eval_batch_size']),   # batch size for evaluation
+        warmup_steps=500,                # number of warmup steps for learning rate scheduler
+        weight_decay=0.01,               # strength of weight decay
+        logging_dir='./logs',            # directory for storing logs
+        logging_steps=100,              # log saving step.
+        evaluation_strategy='steps', # evaluation strategy to adopt during training
+                                    # `no`: No evaluation during training.
+                                    # `steps`: Evaluate every `eval_steps`.
+                                    # `epoch`: Evaluate every end of epoch.
+        eval_steps = int(cf['eval_steps']),            # evaluation step.
+        load_best_model_at_end = True
     )
     trainer = Trainer(
-        model=model,  # the instantiated 🤗 Transformers model to be trained
-        args=training_args,  # training arguments, defined above
-        train_dataset=RE_train_dataset,  # training dataset
-        eval_dataset=RE_dev_dataset,  # evaluation dataset
-        compute_metrics=compute_metrics,  # define metrics function
+        model=model,                         # the instantiated 🤗 Transformers model to be trained
+        args=training_args,                  # training arguments, defined above
+        train_dataset=RE_train_dataset,         # training dataset
+        eval_dataset=RE_dev_dataset,             # evaluation dataset
+        compute_metrics=compute_metrics         # define metrics function
     )
 
     # train model
