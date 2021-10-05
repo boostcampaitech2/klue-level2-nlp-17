@@ -10,6 +10,8 @@ import numpy as np
 import argparse
 from tqdm import tqdm
 
+import configparser
+
 def inference(model, tokenized_sent, device):
   """
     test dataset을 DataLoader로 만들어 준 후,
@@ -60,12 +62,18 @@ def load_test_dataset(dataset_dir, tokenizer):
   return test_dataset['id'], tokenized_test, test_label
 
 def main(args):
+  # read Config file
+  config = configparser.ConfigParser()
+  config.read("config.ini")
+
+  cf = config['project_config']
+
   """
     주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
   """
   device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   # load tokenizer
-  Tokenizer_NAME = "klue/bert-base"
+  Tokenizer_NAME = cf['model_name']
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
 
   ## load my model
