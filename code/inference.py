@@ -86,11 +86,7 @@ def main(args):
     """
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # load tokenizer
-    # Tokenizer_NAME = "klue/bert-base" # default
-    # Tokenizer_NAME = "klue/roberta-base"
-    # Tokenizer_NAME = "klue/roberta-large"
-    # Tokenizer_NAME = "xlm-roberta-base"
-    # Tokenizer_NAME = "xlm-roberta-large"
+    # Tokenizer_NAME = "klue/bert-base"
     Tokenizer_NAME = cf["model_name"]
     tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
 
@@ -101,7 +97,7 @@ def main(args):
     model.to(device)
 
     ## load test datset
-    test_dataset_dir = "../dataset/test/test_data.csv"
+    test_dataset_dir = "/opt/ml/klue-level2-nlp-17/dataset/test/test_data.csv"
     test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
     Re_test_dataset = RE_Dataset(test_dataset, test_label)
 

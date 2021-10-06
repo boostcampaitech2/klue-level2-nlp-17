@@ -27,7 +27,7 @@ def preprocessing_dataset(dataset):
     subject_entity = []
     object_entity = []
     for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        # i = i[1:-1].split(",")[0].split(":")[1]
+        # i = i[1:-1].split(",")[0].split(":")[1] # , 기준이기 떄문에 1,000 과 같은 숫자를 entity 분류시 이슈있음
         # j = j[1:-1].split(",")[0].split(":")[1]
         i = eval(i)["word"]
         j = eval(j)["word"]
