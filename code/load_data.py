@@ -43,6 +43,7 @@ def preprocessing_dataset(dataset):
             "label": dataset["label"],
         }
     )
+
     return out_dataset
 
 
@@ -51,8 +52,12 @@ def load_data(dataset_dir):
     pd_dataset = pd.read_csv(dataset_dir)
     dataset = preprocessing_dataset(pd_dataset)
 
-    return dataset
+    dataset.drop_duplicates(
+    subset=['sentence','subject_entity','object_entity', "label"],
+    inplace= True
+    )
 
+    return dataset
 
 def tokenized_dataset(dataset, tokenizer):
     """tokenizer에 따라 sentence를 tokenizing 합니다."""
