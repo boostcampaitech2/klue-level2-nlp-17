@@ -4,3 +4,8 @@
 # 기타 파일들
 .*
 *.pkl
+/code/wandb
+/code/results
+/code/prediction
+/code/__pycache__
+/code/best_model
