@@ -26,20 +26,23 @@ def preprocessing_dataset(dataset):
     """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
     subject_entity = []
     object_entity = []
-    for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        # i = i[1:-1].split(",")[0].split(":")[1] # , 기준이기 떄문에 1,000 과 같은 숫자를 entity 분류시 이슈있음
-        # j = j[1:-1].split(",")[0].split(":")[1]
-        i = eval(i)["word"]
-        j = eval(j)["word"]
+     # translate_en_train.csv 에서 entity 만 추출했으므로 생략
+    # for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
+    #     # i = i[1:-1].split(",")[0].split(":")[1] # "," 기준이기 떄문에 1,000 과 같은 숫자를 entity 분류시 이슈있음
+    #     # j = j[1:-1].split(",")[0].split(":")[1]
+    #     i = eval(i)["word"]
+    #     j = eval(j)["word"]
 
-        subject_entity.append(i)
-        object_entity.append(j)
+    #     subject_entity.append(i)
+    #     object_entity.append(j)
     out_dataset = pd.DataFrame(
         {
             "id": dataset["id"],
             "sentence": dataset["sentence"],
-            "subject_entity": subject_entity,
-            "object_entity": object_entity,
+            # "subject_entity": subject_entity,
+            "subject_entity": dataset["subject_entity"],
+            # "object_entity": object_entity,
+            "object_entity": dataset["object_entity"],
             "label": dataset["label"],
         }
     )
