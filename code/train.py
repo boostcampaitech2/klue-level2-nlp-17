@@ -144,13 +144,13 @@ def train():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     # load dataset
-    dataset = load_data("/opt/ml/klue-level2-nlp-17/dataset/train/train_entities_aeda_augmented.csv")
+    dataset = pd.read_csv("/opt/ml/dataset/train/train_translate_entities_aeda_augmented.csv")
     label = label_to_num(dataset["label"].values)
 
     train_dataset, dev_dataset, train_label, dev_label = train_test_split(
         dataset,
         label,
-        test_size=0.2,
+        test_size=0.05,
         random_state=42,
         shuffle=True,
         stratify=label,
@@ -194,7 +194,7 @@ def train():
         per_device_eval_batch_size=int(
             cf["eval_batch_size"]
         ),  # batch size for evaluation
-        warmup_steps=500,  # number of warmup steps for learning rate scheduler
+        #warmup_steps=500,  # number of warmup steps for learning rate scheduler
         weight_decay=0.01,  # strength of weight decay
         logging_dir="./logs",  # directory for storing logs
         logging_steps=100,  # log saving step.

@@ -97,7 +97,7 @@ def main(args):
     model.to(device)
 
     ## load test datset
-    test_dataset_dir = "/opt/ml/klue-level2-nlp-17/dataset/test/test_data.csv"
+    test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
     test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
     Re_test_dataset = RE_Dataset(test_dataset, test_label)
 
