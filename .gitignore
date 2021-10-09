@@ -4,8 +4,10 @@
 # 기타 파일들
 .*
 *.pkl
+*.tmp
+stratified_k_fold_ensemble.py
 /code/wandb
 /code/results
 /code/prediction
-/code/__pycache__
 /code/best_model
+/code/__pycache__
