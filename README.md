@@ -130,10 +130,13 @@ Naver Boostcamp AI Tech 팀 프로젝트 입니다.
 ```
 klue-level2-nlp-17/
 ├──code/
-│  ├──load_data.py
-│  ├──triain.py
+│  ├──custom_trainer.py
+│  ├──data_augmentation_main.py
+│  ├──EDA.ipynb
+│  ├──Ensemble.py
 │  ├──inference.py
-│  └──load_data.py
+│  ├──load_data.py
+│  └──train.py
 │
 ├──img
 ├──.gitignore    
