@@ -25,6 +25,7 @@ def round_trip_translation(args, dataset):
 
     save_file = os.path.join(args["train_dir"],"translate_"+"_".join(language_list)+"_train.csv")
     dataset.to_csv(save_file)
+    print("round_trip_translation Done")
     return dataset
 
 
@@ -44,6 +45,7 @@ def change_entity(args, dataset):
     
     save_file = os.path.join(args["train_dir"],"change_entity_train.csv")
     dataset.to_csv(save_file)
+    print("change_entity Done")
     return dataset
 
 
@@ -111,14 +113,15 @@ def aeda(args, dataset):
 
     save_file = os.path.join(args["train_dir"],"aeda_train.csv")
     dataset.to_csv(save_file)
+    print("AEDA Done")
     return dataset
 
 
 if __name__ == '__main__':
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    print(device)
+
     args = argparse.ArgumentParser(description='how to use argparser')
-    args.add_argument('-c', '--config', default=None, type=str, help='config.json file path')
+    args.add_argument('-c', '--config', default="./config.json", type=str, help='config.json file path')
     args = args.parse_args()
 
     args = json.load(open(args.config,'rt'))
@@ -128,7 +131,7 @@ if __name__ == '__main__':
 
     augmentation_method_list = args['augmentation_method_list'].split()
 
-    for augmentation_method in augmentation_method_list:
+    for augmentation_method in augmentation_method_list[2:]:
         dataset = getattr(import_module('data_augmentation_main'),augmentation_method)(args,dataset)
 
     save_file = os.path.join(args["train_dir"],"_".join(augmentation_method_list)+"_train.csv")

@@ -28,13 +28,26 @@ def inference(model, tokenized_sent, device):
     model.eval()
     output_pred = []
     output_prob = []
+
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    cf = config["project_config"]
+    Tokenizer_NAME = cf["model_name"]
+
     for i, data in enumerate(tqdm(dataloader)):
         with torch.no_grad():
-            outputs = model(
-                input_ids=data["input_ids"].to(device),
-                attention_mask=data["attention_mask"].to(device),
-                # token_type_ids=data['token_type_ids'].to(device)  # roberta-base 일 때 None
-            )
+            if "roberta" in Tokenizer_NAME:
+                outputs = model(
+                    input_ids=data["input_ids"].to(device),
+                    attention_mask=data["attention_mask"].to(device),
+                    # token_type_ids=data['token_type_ids'].to(device)  # roberta 일 때, None
+                )
+            else:
+                outputs = model(
+                    input_ids=data["input_ids"].to(device),
+                    attention_mask=data["attention_mask"].to(device),
+                    token_type_ids=data['token_type_ids'].to(device),
+                )
         logits = outputs[0]
         prob = F.softmax(logits, dim=-1).detach().cpu().numpy()
         logits = logits.detach().cpu().numpy()

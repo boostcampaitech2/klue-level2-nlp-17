@@ -2,6 +2,7 @@ import pickle as pickle
 import os
 import pandas as pd
 import torch
+import configparser
 
 
 class RE_Dataset(torch.utils.data.Dataset):
@@ -56,14 +57,32 @@ def tokenized_dataset(dataset, tokenizer):
         temp = ""
         temp = e01 + "[SEP]" + e02
         concat_entity.append(temp)
-    tokenized_sentences = tokenizer(
-        concat_entity,
-        list(dataset["sentence"]),
-        return_tensors="pt",
-        padding=True,
-        truncation=True,
-        max_length=256,
-        add_special_tokens=True,
-        return_token_type_ids=False,  # roberta-base 시 추가
-    )
+        
+    # read Config file
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    cf = config["project_config"]
+    Tokenizer_NAME = cf["model_name"]
+
+    if "roberta" in Tokenizer_NAME:
+        tokenized_sentences = tokenizer(
+            concat_entity,
+            list(dataset["sentence"]),
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=256,
+            add_special_tokens=True,
+            return_token_type_ids=False,  # roberta 일 때, 추가
+        )
+    else:
+        tokenized_sentences = tokenizer(
+            concat_entity,
+            list(dataset["sentence"]),
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=256,
+            add_special_tokens=True,
+        )
     return tokenized_sentences

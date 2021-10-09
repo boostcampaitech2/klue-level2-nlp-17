@@ -139,12 +139,12 @@ def train():
         wandb.run.save()
 
     # load model and tokenizer
-    # MODEL_NAME = "klue/bert-base"
+    # MODEL_NAME = "klue/bert-base"  # default
     MODEL_NAME = cf["model_name"]
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     # load dataset
-    dataset = load_data("../dataset/train/train_entities_aeda_augmented.csv")
+    dataset = load_data("../dataset/train/round_trip_translation_change_entity_aeda_train.csv")
     label = label_to_num(dataset["label"].values)
 
     train_dataset, dev_dataset, train_label, dev_label = train_test_split(
