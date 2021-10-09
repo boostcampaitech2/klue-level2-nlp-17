@@ -82,11 +82,11 @@ Naver Boostcamp AI Tech 팀 프로젝트 입니다.
 <br>
 <img src="https://latex.codecogs.com/svg.image?F_1&space;=&space;2&space;*&space;\frac{\mathrm{precision&space;*&space;recall}&space;}{\mathrm{precision}&space;&plus;&space;\mathrm{recall}}&space;" title="F_1 = 2 * \frac{\mathrm{precision * recall} }{\mathrm{precision} + \mathrm{recall}} " />
 <br>
-![ex_screenshot](./img/KLUE_Metrix_MicroF1.png)
+![ex_screenshot](./img/KLUE_Metrix_MicroF1.PNG)
 - AUPRC
     - x축은 Recall, y축은 Precision이며,  
       모든 class에 대한 평균적인 AUPRC로 계산해 score를 측정 합니다. imbalance한 데이터에 유용한 metric 입니다.
-![ex_screenshot](./img/KLUE_Metrix_AUPRC.png)
+![ex_screenshot](./img/KLUE_Metrix_AUPRC.PNG)
     - 위 그래프의 예시는 scikit-learn의 Precision-Recall 그래프의 예시 입니다. 그림의 예시와 같이 class 0, 1, 2의 area(면적 값)을 각각 구한 후, 평균을 계산한 결과를 AUPRC score로 사용합니다.
 - Reference
     - https://towardsdatascience.com/handling-imbalanced-datasets-in-machine-learning-7a0e84220f28
