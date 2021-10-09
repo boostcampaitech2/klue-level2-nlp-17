@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
     augmentation_method_list = args['augmentation_method_list'].split()
 
-    for augmentation_method in augmentation_method_list[2:]:
+    for augmentation_method in augmentation_method_list:
         dataset = getattr(import_module('data_augmentation_main'),augmentation_method)(args,dataset)
 
     save_file = os.path.join(args["train_dir"],"_".join(augmentation_method_list)+"_train.csv")
