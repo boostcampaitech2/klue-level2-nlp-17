@@ -144,7 +144,7 @@ def train():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     # load dataset
-    dataset = load_data("/opt/ml/klue-level2-nlp-17/dataset/train/train_entities_aeda_augmented.csv")
+    dataset = load_data("../dataset/train/train_entities_aeda_augmented.csv")
     label = label_to_num(dataset["label"].values)
 
     train_dataset, dev_dataset, train_label, dev_label = train_test_split(

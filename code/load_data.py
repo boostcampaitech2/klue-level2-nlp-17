@@ -24,28 +24,16 @@ class RE_Dataset(torch.utils.data.Dataset):
 
 def preprocessing_dataset(dataset):
     """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
-    subject_entity = []
-    object_entity = []
-     # translate_en_train.csv 에서 entity 만 추출했으므로 생략
-    # for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-    #     # i = i[1:-1].split(",")[0].split(":")[1] # "," 기준이기 떄문에 1,000 과 같은 숫자를 entity 분류시 이슈있음
-    #     # j = j[1:-1].split(",")[0].split(":")[1]
-    #     i = eval(i)["word"]
-    #     j = eval(j)["word"]
-
-    #     subject_entity.append(i)
-    #     object_entity.append(j)
     out_dataset = pd.DataFrame(
         {
             "id": dataset["id"],
             "sentence": dataset["sentence"],
-            # "subject_entity": subject_entity,
             "subject_entity": dataset["subject_entity"],
-            # "object_entity": object_entity,
             "object_entity": dataset["object_entity"],
             "label": dataset["label"],
         }
     )
+
     return out_dataset
 
 
@@ -54,8 +42,12 @@ def load_data(dataset_dir):
     pd_dataset = pd.read_csv(dataset_dir)
     dataset = preprocessing_dataset(pd_dataset)
 
-    return dataset
+    dataset.drop_duplicates(
+    subset=['sentence','subject_entity','object_entity', "label"],
+    inplace= True
+    )
 
+    return dataset
 
 def tokenized_dataset(dataset, tokenizer):
     """tokenizer에 따라 sentence를 tokenizing 합니다."""

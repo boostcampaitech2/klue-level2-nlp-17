@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -36,8 +37,7 @@ print("-----AEDA-----")
 st = time()
 
 
-import random
-from koeda import AEDA
+
 
 SPACE_TOKEN = "\u241F"
 
@@ -51,7 +51,6 @@ def revert_space(text: list) -> str:
     return clean
 
 
-# 이거 불러와서 AEDA 처럼 쓰시면 됩니다.
 class myAEDA(AEDA):
     def _aeda(self, data: str, p: float) -> str:
         if p is None:
@@ -98,7 +97,6 @@ for idx, row in df.iterrows():
     sentence_aeda = aeda(row.sentence)
     df.loc[added_index] = [added_index, sentence_aeda, row.subject_entity, row.object_entity, row.label, row.source]
     added_index += 1
-    print(idx)
 
 df.to_csv("/opt/ml/klue-level2-nlp-17/dataset/train/train_entities_aeda_augmented.csv", index=False)
 
