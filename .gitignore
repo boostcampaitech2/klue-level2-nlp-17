@@ -1,8 +1,13 @@
 # 데이터셋
 /dataset
 
+# dataset Dictionary files
+!/code/dict_num_to_label.pkl
+!/code/dict_label_to_num.pkl
+
 # 기타 파일들
 .*
+
 *.pkl
 *.tmp
 stratified_k_fold_ensemble.py
