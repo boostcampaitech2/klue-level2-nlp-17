@@ -1,13 +1,15 @@
 import argparse
 import json
 from importlib import import_module
-from pororo import Pororo
+import pandas as pd
 import os
 from tqdm import tqdm
 import torch
-from koeda import AEDA
 import random
-
+from pororo import Pororo
+from koeda import AEDA
+from koeda import RS
+from koeda import RI
 
 def round_trip_translation(args, dataset):
     language_list = args['language_list'].split()
@@ -94,76 +96,6 @@ def aeda(args, dataset):
 
             return augmented_sentences
 
-def eda_rs(train_dataset, n, criteria, p):
-    '''
-        Param
-        - dataset : eda-rs 대상
-        - n : 증강 개수
-        - criteria : 데이터 분포의 기준
-        - p : 문장에 대하여 변화시킬 비율
-        Usage
-            dataset에 대하여, criteria 비율 이하에 대하여 RS 증강.
-    '''
-    eda_lbl = train_dataset["label"].value_counts(normalize=True).loc[
-        lambda x: x < criteria].index.tolist()  # criteria 이하만 증강
-
-    eda_trg_data = train_dataset[train_dataset['label'].isin(aeda_lbl)].copy()  # 증강시킬 label만 있는 dataframe 복제
-
-    eda_data = pd.DataFrame(columns=train_dataset.keys())  # 빈 dataframe
-
-    # sub -> @ , obj -> # 변경
-    aug_sentence = [eda_trg_data['sentence'].iloc[i].replace(eda_trg_data['subject_entity'].iloc[i], "@").replace(
-        eda_trg_data['object_entity'].iloc[i], "#")
-        for i in range(len(eda_trg_data))]
-
-    ## RS
-    augmenter = RS(morpheme_analyzer="Mecab")
-    result = augmenter(aug_sentence, p=p, repetition=n)
-
-    for i in range(n):
-        tmp = eda_trg_data.copy()
-        tmp['sentence'] = result[i::n]
-        tmp['sentence'] = [tmp['sentence'].iloc[i].replace("@", tmp['subject_entity'].iloc[i]).replace("#", tmp[
-            'object_entity'].iloc[i]) for i in range(len(tmp))]
-        eda_data = eda_data.append(tmp)
-
-    return eda_data
-
-def eda_ri(train_dataset, n, criteria, p):
-    '''
-        Param
-        - dataset : eda-rs 대상
-        - n : 증강 개수
-        - criteria : 데이터 분포의 기준
-        - p : 문장에 대하여 변화시킬 비율
-        Usage
-            dataset에 대하여, criteria 비율 이하에 대하여 RI 증강.
-    '''
-    eda_lbl = train_dataset["label"].value_counts(normalize=True).loc[
-        lambda x: x < criteria].index.tolist()  # criteria 이하만 증강
-
-    eda_trg_data = train_dataset[train_dataset['label'].isin(aeda_lbl)].copy()  # 증강시킬 label만 있는 dataframe 복제
-
-    eda_data = pd.DataFrame(columns=train_dataset.keys())  # 빈 dataframe
-
-    # sub -> @ , obj -> # 변경
-    aug_sentence = [eda_trg_data['sentence'].iloc[i].replace(eda_trg_data['subject_entity'].iloc[i], "@").replace(
-        eda_trg_data['object_entity'].iloc[i], "#")
-        for i in range(len(eda_trg_data))]
-
-    ## RI
-    augmenter = RI(morpheme_analyzer="Mecab", stopword=False)
-    result = augmenter(aug_sentence, p=p, repetition=n)
-
-    for i in range(n):
-        tmp = eda_trg_data.copy()
-        tmp['sentence'] = result[i::n]
-        tmp['sentence'] = [tmp['sentence'].iloc[i].replace("@", tmp['subject_entity'].iloc[i]).replace("#", tmp[
-            'object_entity'].iloc[i]) for i in range(len(tmp))]
-        eda_data = eda_data.append(tmp)
-
-    return eda_data
-
 
     aeda_no_space = AEDA_No_Space(
         morpheme_analyzer="Okt", punc_ratio=0.3, punctuations=[".", ",", "!", "?", ";", ":"]
@@ -187,6 +119,79 @@ def eda_ri(train_dataset, n, criteria, p):
     return dataset
 
 
+def eda_rs(train_dataset, n, criteria, p):
+    '''
+        Param
+        - dataset : eda-rs 대상
+        - n : 증강 개수
+        - criteria : 데이터 분포의 기준
+        - p : 문장에 대하여 변화시킬 비율
+        Usage
+            dataset에 대하여, criteria 비율 이하에 대하여 RS 증강.
+    '''
+    eda_lbl = train_dataset["label"].value_counts(normalize=True).loc[
+        lambda x: x < criteria].index.tolist()  # criteria 이하만 증강
+
+    eda_trg_data = train_dataset[train_dataset['label'].isin(eda_lbl)].copy()  # 증강시킬 label만 있는 dataframe 복제
+
+    eda_data = pd.DataFrame(columns=train_dataset.keys())  # 빈 dataframe
+
+    # sub -> @ , obj -> # 변경
+    aug_sentence = [eda_trg_data['sentence'].iloc[i].replace(eda_trg_data['subject_entity'].iloc[i], "@").replace(
+        eda_trg_data['object_entity'].iloc[i], "#")
+        for i in range(len(eda_trg_data))]
+
+    ## RS
+    augmenter = RS(morpheme_analyzer="Mecab")
+    result = augmenter(aug_sentence, p=p, repetition=n)
+
+    for i in range(n):
+        tmp = eda_trg_data.copy()
+        tmp['sentence'] = result[i::n]
+        tmp['sentence'] = [tmp['sentence'].iloc[i].replace("@", tmp['subject_entity'].iloc[i]).replace("#", tmp[
+            'object_entity'].iloc[i]) for i in range(len(tmp))]
+        eda_data = eda_data.append(tmp)
+
+    print("eda_rs Done")
+    return eda_data
+
+def eda_ri(train_dataset, n, criteria, p):
+    '''
+        Param
+        - dataset : eda-rs 대상
+        - n : 증강 개수
+        - criteria : 데이터 분포의 기준
+        - p : 문장에 대하여 변화시킬 비율
+        Usage
+            dataset에 대하여, criteria 비율 이하에 대하여 RI 증강.
+    '''
+    eda_lbl = train_dataset["label"].value_counts(normalize=True).loc[
+        lambda x: x < criteria].index.tolist()  # criteria 이하만 증강
+
+    eda_trg_data = train_dataset[train_dataset['label'].isin(eda_lbl)].copy()  # 증강시킬 label만 있는 dataframe 복제
+
+    eda_data = pd.DataFrame(columns=train_dataset.keys())  # 빈 dataframe
+
+    # sub -> @ , obj -> # 변경
+    aug_sentence = [eda_trg_data['sentence'].iloc[i].replace(eda_trg_data['subject_entity'].iloc[i], "@").replace(
+        eda_trg_data['object_entity'].iloc[i], "#")
+        for i in range(len(eda_trg_data))]
+
+    ## RI
+    augmenter = RI(morpheme_analyzer="Mecab", stopword=False)
+    result = augmenter(aug_sentence, p=p, repetition=n)
+
+    for i in range(n):
+        tmp = eda_trg_data.copy()
+        tmp['sentence'] = result[i::n]
+        tmp['sentence'] = [tmp['sentence'].iloc[i].replace("@", tmp['subject_entity'].iloc[i]).replace("#", tmp[
+            'object_entity'].iloc[i]) for i in range(len(tmp))]
+        eda_data = eda_data.append(tmp)
+
+    print("eda_ri Done")
+    return eda_data
+
+
 if __name__ == '__main__':
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -201,7 +206,7 @@ if __name__ == '__main__':
 
     augmentation_method_list = args['augmentation_method_list'].split()
 
-    for augmentation_method in augmentation_method_list:
+    for augmentation_method in augmentation_method_list[2:4]:
         dataset = getattr(import_module('data_augmentation_main'),augmentation_method)(args,dataset)
 
     save_file = os.path.join(args["train_dir"],"_".join(augmentation_method_list)+"_train.csv")
