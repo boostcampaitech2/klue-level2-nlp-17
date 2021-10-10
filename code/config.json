@@ -1,7 +1,7 @@
 {
-    "load_data" : "load_data",
-    "train_data" : "../dataset/train/train.csv",
-    "train_dir" : "../dataset/train/",
+    "load_data": "load_data",
+    "train_data": "../dataset/train/train.csv",
+    "train_dir": "../dataset/train/",
     "augmentation_method_list": "round_trip_translation change_entity eda_rs eda_ri aeda",
     "language_list": "en",
     "not_augmentate_label_list": "no_relation org:top_members/employees per:employee_of per:title org:member_of org:alternate_names per:origin org:place_of_headquarters per:date_of_birth"
