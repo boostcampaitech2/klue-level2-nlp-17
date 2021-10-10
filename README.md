@@ -94,8 +94,11 @@ Naver Boostcamp AI Tech 팀 프로젝트 입니다.
 
 # Competition Result
 - Public LB
-    - Micro F1 Score : 
-    - AUPRC : 
+    - Micro F1 Score : 72.258
+    - AUPRC : 76.075
+- Private LB
+    - Micro F1 Score : 70.577
+    - AUPRC : 77.215
 
 <br>
 
@@ -130,15 +133,22 @@ Naver Boostcamp AI Tech 팀 프로젝트 입니다.
 ```
 klue-level2-nlp-17/
 ├──code/
+│  ├──ipynb/
+│  │  ├──EDA.ipynb
+│  │  └──Ensemble.ipynb
+│  │
+│  ├──config.ini
+│  ├──config.json
 │  ├──custom_trainer.py
 │  ├──data_augmentation_main.py
-│  ├──EDA.ipynb
-│  ├──Ensemble.py
+│  ├──dict_label_to_num.pkl
+│  ├──dict_num_to_label.pkl
 │  ├──inference.py
 │  ├──load_data.py
+│  ├──requirements.txt
 │  └──train.py
 │
-├──img
+├──img/
 ├──.gitignore    
 └──README.md
 ```
@@ -147,5 +157,6 @@ klue-level2-nlp-17/
 
 # Source Code
 
-- `train.py` : 
-- `inference.py` :
+- `data_augmentation_main.py` : 여러 방법으로 데이터를 증강시킵니다.
+- `train.py` : 데이터를 로드해 모델을 학습시킵니다.
+- `inference.py` : 학습한 모델로부터 테스트 데이터에 대해 30개의 class 결과를 예측합니다.
