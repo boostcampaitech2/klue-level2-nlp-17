@@ -46,7 +46,7 @@ def inference(model, tokenized_sent, device):
                 outputs = model(
                     input_ids=data["input_ids"].to(device),
                     attention_mask=data["attention_mask"].to(device),
-                    token_type_ids=data['token_type_ids'].to(device),
+                    token_type_ids=data["token_type_ids"].to(device),
                 )
         logits = outputs[0]
         prob = F.softmax(logits, dim=-1).detach().cpu().numpy()
@@ -124,11 +124,7 @@ def main(args):
     #########################################################
     # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
     output = pd.DataFrame(
-        {
-            "id": test_id,
-            "pred_label": pred_answer,
-            "probs": output_prob,
-        }
+        {"id": test_id, "pred_label": pred_answer, "probs": output_prob,}
     )
 
     output.to_csv(

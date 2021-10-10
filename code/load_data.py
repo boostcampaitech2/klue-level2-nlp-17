@@ -44,11 +44,11 @@ def load_data(dataset_dir):
     dataset = preprocessing_dataset(pd_dataset)
 
     dataset.drop_duplicates(
-    subset=['sentence','subject_entity','object_entity', "label"],
-    inplace= True
+        subset=["sentence", "subject_entity", "object_entity", "label"], inplace=True
     )
 
     return dataset
+
 
 def tokenized_dataset(dataset, tokenizer):
     """tokenizer에 따라 sentence를 tokenizing 합니다."""
@@ -57,7 +57,7 @@ def tokenized_dataset(dataset, tokenizer):
         temp = ""
         temp = e01 + "[SEP]" + e02
         concat_entity.append(temp)
-        
+
     # read Config file
     config = configparser.ConfigParser()
     config.read("config.ini")

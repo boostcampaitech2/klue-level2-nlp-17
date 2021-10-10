@@ -144,16 +144,13 @@ def train():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     # load dataset
-    dataset = load_data("../dataset/train/round_trip_translation_change_entity_aeda_train.csv")
+    dataset = load_data(
+        "../dataset/train/round_trip_translation_change_entity_aeda_train.csv"
+    )
     label = label_to_num(dataset["label"].values)
 
     train_dataset, dev_dataset, train_label, dev_label = train_test_split(
-        dataset,
-        label,
-        test_size=0.2,
-        random_state=42,
-        shuffle=True,
-        stratify=label,
+        dataset, label, test_size=0.2, random_state=42, shuffle=True, stratify=label,
     )
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
     # dev_label = label_to_num(dev_dataset['label'].values)
